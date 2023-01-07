@@ -9,14 +9,19 @@ services:
     volumes: 
      - ./backend/:/src
     environment:
-    - CORPUS=english_corpus.csv
+    - CORPUS=korean_corpus.csv
     - APIPORT=5000
     - WEBWORKERS=1
   frontend:
     container_name: mrs-frontend
     build:
       context: ./frontend/
+    command: bash -c "serve -s -l 3000 build"
     ports:
-     - "3000:3000"
+      - "3000:3000"
     volumes:
      - ./frontend/:/src
+     - node_modules:/src/node_modules
+
+volumes:
+  node_modules:

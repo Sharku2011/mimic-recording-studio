@@ -4,6 +4,7 @@ from .protocol import response
 from .file_system import AudioFS, PromptsFS, temp_path
 from .audio import Audio
 import random
+import traceback
 
 
 class UserAPI:
@@ -88,7 +89,7 @@ class AudioAPI:
                 trimmed_sound = Audio.trim_silence(path)
                 Audio.save_audio(path, trimmed_sound)
 
-                res = DB.save_audio(wav_file_id, prompt, 'english', uuid)
+                res = DB.save_audio(wav_file_id, prompt, 'korean', uuid, audio_len, char_len)
                 if res.success:
                     audio_len = Audio.get_audio_len(trimmed_sound)
                     char_len = len(prompt)
@@ -98,6 +99,7 @@ class AudioAPI:
                 return response(False)
             except Exception as e:
                 # TODO: log Exception
+                traceback.print_exc()
                 print(e)
                 return response(False)
 

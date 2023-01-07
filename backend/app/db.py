@@ -12,13 +12,15 @@ from peewee import (
     AutoField
 )
 
+MIMIC_BASE_DIR = os.environ["MIMIC_BASE_DIR"] if "MIMIC_BASE_DIR" in os.environ else os.path.dirname(os.path.abspath(__file__))
 
 # define paths and directories
 mimic_studio_dir = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
+    MIMIC_BASE_DIR,
     "../db"
 )
 os.makedirs(mimic_studio_dir, exist_ok=True)
+
 mimic_studio_db_path = os.path.join(
     mimic_studio_dir,
     "mimicstudio.db"
@@ -37,7 +39,7 @@ class UserModel(Model):
     total_time_spoken = FloatField(default=0.0)
     len_char_spoken = IntegerField(default=0)
     # TODO: language support, change this from default
-    language = CharField(default='english')
+    language = CharField(default='korean')
     created_date = DateTimeField(default=datetime.datetime.now)
 
     class Meta:
@@ -66,6 +68,8 @@ class AudioModel(Model):
     audio_id = CharField()
     prompt = CharField()
     language = CharField()
+    time = FloatField(default=0.0)
+    len_char = IntegerField(default=0)
     user = ForeignKeyField(UserModel, backref="user")
     created_date = DateTimeField(default=datetime.datetime.now)
 
@@ -189,7 +193,7 @@ class DB:
 
     @staticmethod
     def save_audio(audio_id: str, prompt: str,
-                   language: str, uuid: str) -> response:
+                   language: str, uuid: str, time: float, char_len: int) -> response:
         """Save new recording to SQLite database (table audiomodel)
 
         Args:
@@ -207,6 +211,8 @@ class DB:
                 DB.AudioModel.create(
                     audio_id=audio_id,
                     prompt=prompt,
+                    time=time,
+                    len_char=char_len,
                     language=language,
                     user=user
                 )

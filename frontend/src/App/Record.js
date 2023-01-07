@@ -202,11 +202,25 @@ class Record extends Component {
   processBlob = blob => {
     getAudioLen(this.uuid, blob)
       .then(res => res.json())
-      .then(res =>
-        this.setState({
-          audioLen: res.data.audio_len
-        })
-      );
+      .then(res => {
+        if (res.data === undefined) {
+          // alert("There was an error on server");
+          return this.setState({
+            shouldRecord: false,
+            displayWav: false,
+            blob: undefined,
+            promptNum: 0,
+            totalTime: 0,
+            totalCharLen: 0,
+            audioLen: 0,
+            play: false
+          });
+        } else {
+          return this.setState({
+            audioLen: res.data.audio_len
+          });
+        }
+      });
     this.setState({
       blob: blob
     });
@@ -224,6 +238,7 @@ class Record extends Component {
     if (event.keyCode === 32) {
       if (!this.state.shouldRecord) {
         event.preventDefault();
+        this.reset();
         this.recordHandler();
       }
     }
@@ -261,6 +276,17 @@ class Record extends Component {
           this.onNext();
         }
      }
+  };
+
+  reset = () => {
+    // resets all states
+    this.setState({
+      shouldRecord: false,
+      displayWav: false,
+      blob: undefined,
+      audioLen: 0,
+      play: false
+    });
   };
 
   recordHandler = () => {

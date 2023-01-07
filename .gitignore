@@ -7,9 +7,6 @@ node_modules/
 # testing
 /coverage
 
-# production
-/build
-
 # misc
 .DS_Store
 .env.local
@@ -23,11 +20,14 @@ yarn-error.log*
 
 
 # my ignores
-*.json
 db/
 audio_files/
 tmp/
 .vscode
 logs
 __pycache__
+chrome.ccp
+filelists*
+*.spec
 build/
+dist/
